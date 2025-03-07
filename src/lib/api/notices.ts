@@ -1,5 +1,7 @@
 import { pool } from '@/lib/db';
 import { Notice } from '@/types/notice';
+import { client } from '@/lib/graphql';
+import { GET_NOTICES_BY_CATEGORY } from '@/lib/graphql/queries';
 
 interface Notice {
   nid: number;
@@ -115,13 +117,8 @@ export async function fetchNoticesByCategory(categoryType: string) {
     return [];
   }
 
-  console.log('Category keywords:', keywords);
-
-  // .env에서 VIEW_DAY_INTERVAL 값을 가져옴 (기본값 5일)
   const viewDayInterval = parseInt(process.env.VIEW_DAY_INTERVAL || '5', 10);
   const startDate = getDateBefore(viewDayInterval);
-
-  console.log('Using date range:', startDate, 'to now');
 
   const testBody = {
     keywords: keywords.keywords.join(','),
@@ -132,8 +129,6 @@ export async function fetchNoticesByCategory(categoryType: string) {
       'SELECT notices.nid, notices.`작성일`, notices.`기관명`, notices.`제목`, notices.`상세페이지주소`, settings_list.`등록`, settings_list.`지역` FROM notices LEFT JOIN settings_list ON notices.`기관명` = settings_list.`기관명`',
     add_sql: 'ORDER BY notices.`작성일` DESC',
   };
-
-  console.log('Sending request with body:', testBody);
 
   try {
     const response = await fetch('http://1.231.118.217:8002/notices_by_search/', {
@@ -153,7 +148,7 @@ export async function fetchNoticesByCategory(categoryType: string) {
     console.log('API response data:', data);
 
     const mappedData = data.map((row: any) => ({
-      nid: 0, // 임시 ID
+      nid: parseInt(row[0], 10) || 0,
       title: row[3],
       organization: row[2],
       createdAt: row[1],
@@ -214,6 +209,24 @@ export async function fetchAllNotices(limit: number): Promise<Notice[]> {
     }));
   } catch (error) {
     console.error('Error fetching notices:', error);
+    return [];
+  }
+}
+
+export async function getNoticesByCategory(category: string): Promise<Notice[]> {
+  try {
+    const notices = await fetchNoticesByCategory(category);
+    return notices.map((notice: any) => ({
+      nid: parseInt(notice.nid, 10) || 0,
+      title: notice.title,
+      organization: notice.organization,
+      createdAt: notice.createdAt,
+      detailUrl: notice.detailUrl,
+      region: notice.region || '-',
+      registration: notice.registration || '-',
+    }));
+  } catch (error) {
+    console.error('Error fetching notices by category:', error);
     return [];
   }
 }
