@@ -13,7 +13,8 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   try {
-    const categoryType = decodeURIComponent(await Promise.resolve(params.categoryType));
+    const resolvedParams = await Promise.resolve(params);
+    const categoryType = decodeURIComponent(resolvedParams.categoryType);
     const categoryInfo = await getCategoryKeywords(categoryType);
     const title = categoryInfo ? `${categoryInfo.categoryType} 입찰공고` : '입찰공고';
 
@@ -32,7 +33,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function CategoryPage({ params }: PageProps) {
   try {
-    const categoryType = decodeURIComponent(await Promise.resolve(params.categoryType));
+    const resolvedParams = await Promise.resolve(params);
+    const categoryType = decodeURIComponent(resolvedParams.categoryType);
     const notices = await getNoticesByCategory(categoryType);
     const categoryInfo = await getCategoryKeywords(categoryType);
 
