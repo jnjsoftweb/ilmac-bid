@@ -175,29 +175,55 @@ export default function BidTable({ notices, currentCategory }: BidTableProps) {
           <TableHeader>
             <TableRow>
               <TableHead className="w-[50px] text-center">-</TableHead>
-              <TableHead className="hidden">번호</TableHead>
+              <TableHead className="hidden hover:bg-transparent">번호</TableHead>
               <TableHead>
-                <Button variant="ghost" onClick={() => toggleSort('title')} className="hover:bg-transparent">
+                <Button 
+                  variant="ghost" 
+                  onClick={() => toggleSort('title')}
+                  className="hover:bg-transparent p-0"
+                >
                   제목
-                  <ArrowUpDown className="ml-2 h-4 w-4" />
+
                 </Button>
               </TableHead>
               <TableHead>
-                <Button variant="ghost" onClick={() => toggleSort('organization')} className="hover:bg-transparent">
+                <Button 
+                  variant="ghost" 
+                  onClick={() => toggleSort('createdAt')}
+                  className="hover:bg-transparent p-0"
+                >
+                  작성일
+
+                </Button>
+              </TableHead>
+              <TableHead>
+                <Button 
+                  variant="ghost" 
+                  onClick={() => toggleSort('organization')}
+                  className="hover:bg-transparent p-0"
+                >
                   기관명
-                  <ArrowUpDown className="ml-2 h-4 w-4" />
+
                 </Button>
               </TableHead>
               <TableHead>
-                <Button variant="ghost" onClick={() => toggleSort('region')} className="hover:bg-transparent">
+                <Button 
+                  variant="ghost" 
+                  onClick={() => toggleSort('region')}
+                  className="hover:bg-transparent p-0"
+                >
                   지역
-                  <ArrowUpDown className="ml-2 h-4 w-4" />
+
                 </Button>
               </TableHead>
               <TableHead>
-                <Button variant="ghost" onClick={() => toggleSort('registration')} className="hover:bg-transparent">
+                <Button 
+                  variant="ghost" 
+                  onClick={() => toggleSort('registration')}
+                  className="hover:bg-transparent p-0"
+                >
                   등록
-                  <ArrowUpDown className="ml-2 h-4 w-4" />
+
                 </Button>
               </TableHead>
             </TableRow>
@@ -221,6 +247,18 @@ export default function BidTable({ notices, currentCategory }: BidTableProps) {
                   >
                     {notice.title}
                   </a>
+                </TableCell>
+                <TableCell>
+                  {(() => {
+                    try {
+                      if (typeof notice.createdAt === 'string') {
+                        return notice.createdAt.split('T')[0];
+                      }
+                      return new Date(notice.createdAt).toISOString().split('T')[0];
+                    } catch (error) {
+                      return '-';
+                    }
+                  })()}
                 </TableCell>
                 <TableCell>{notice.organization}</TableCell>
                 <TableCell>{notice.region || '-'}</TableCell>

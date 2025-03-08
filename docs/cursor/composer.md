@@ -92,3 +92,12 @@
 - 로그인(프로필)
 - 설정
 """
+
+
+===
+
+`notices/category/[categoryType]` 페이지의 테이블에 '작성일' 컬럼을 추가해주세요.
+
+===
+
+`notices/category/[categoryType]` 페이지의 테이블 header에 hover 효과를 없애주세요.

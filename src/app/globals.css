@@ -116,8 +116,16 @@
 }
 
 .category-page thead tr {
-  background-color: var(--table-header-bg);
+  background-color: var(--table-header-bg) !important;
   color: var(--table-header-text);
+}
+
+.category-page thead th {
+  background-color: var(--table-header-bg) !important;
+}
+
+.category-page thead th:hover {
+  background-color: var(--table-header-bg) !important;
 }
 
 .category-page thead button {
@@ -125,7 +133,7 @@
 }
 
 .category-page thead button:hover {
-  background-color: hsl(var(--primary-dark)) !important;
+  background-color: transparent !important;
 }
 
 .category-page tbody {
@@ -253,4 +261,9 @@
 .rdp-day_selected:hover {
   background-color: var(--rdp-accent-color);
   color: white;
+}
+
+/* Table styles */
+.table-container th {
+  @apply hover:bg-transparent !important;
 }

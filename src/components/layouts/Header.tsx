@@ -33,15 +33,18 @@ import {
 
 const notices = [
   {
-    title: '자동 스크랩',
-    href: '/notices/auto',
-    description: '자동으로 스크랩된 공고 목록',
+    title: '공사점검',
+    href: '/notices/category/공사점검',
     icon: BookmarkPlus,
   },
   {
-    title: '수동 스크랩',
-    href: '/notices/manual',
-    description: '수동으로 스크랩된 공고 목록',
+    title: '성능평가',
+    href: '/notices/category/성능평가',
+    icon: BookmarkCheck,
+  },
+  {
+    title: '기타',
+    href: '/notices/category/기타',
     icon: BookmarkCheck,
   },
 ];
@@ -91,13 +94,13 @@ const statistics = [
 const settings = [
   {
     title: '목록 스크랩',
-    href: '/settings/list-scrape',
+    href: '/settings/list',
     description: '목록 스크랩 설정',
     icon: ListTodo,
   },
   {
     title: '상세 스크랩',
-    href: '/settings/detail-scrape',
+    href: '/settings/detail',
     description: '상세 스크랩 설정',
     icon: Settings,
   },
@@ -148,7 +151,6 @@ export function Header() {
                     <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
                       {notices.map((item) => (
                         <ListItem key={item.title} title={item.title} href={item.href} icon={item.icon}>
-                          {item.description}
                         </ListItem>
                       ))}
                     </ul>
