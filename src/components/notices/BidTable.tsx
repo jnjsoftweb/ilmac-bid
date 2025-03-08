@@ -8,13 +8,13 @@ import { Button } from '@/components/ui/button';
 import { ArrowUpDown, Search, Star } from 'lucide-react';
 import { type Notice } from '@/types/notice';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useNoticeFilterStore } from '@/store/noticeFilterStore';
+import { filterNotices } from '@/lib/utils/filterNotices';
+import { AdvancedSearchModal } from './AdvancedSearchModal';
+import { SettingsModal } from './SettingsModal';
+import { useSettingsStore } from '@/store/settingsStore';
+import { NoticeDetailModal } from './NoticeDetailModal';
 
 type SortField = 'title' | 'organization' | 'createdAt' | 'region' | 'registration';
 type SortOrder = 'asc' | 'desc';
@@ -34,10 +34,14 @@ export default function BidTable({ notices, currentCategory }: BidTableProps) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedNids, setSelectedNids] = useState<number[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{ field: SortField; order: SortOrder }>({
     field: 'createdAt',
     order: 'desc',
   });
+  const { filter } = useNoticeFilterStore();
+  const { perPage } = useSettingsStore();
+  const [selectedNotice, setSelectedNotice] = useState<Notice | null>(null);
 
   // 카테고리 변경 핸들러
   const handleCategoryChange = (value: string) => {
@@ -46,8 +50,8 @@ export default function BidTable({ notices, currentCategory }: BidTableProps) {
 
   // 정렬 함수
   const sortData = (a: Notice, b: Notice, field: SortField) => {
-    const aValue = String(a[field] || '');  // 문자열로 변환
-    const bValue = String(b[field] || '');  // 문자열로 변환
+    const aValue = String(a[field] || ''); // 문자열로 변환
+    const bValue = String(b[field] || ''); // 문자열로 변환
 
     if (field === 'createdAt') {
       return sortConfig.order === 'asc'
@@ -72,6 +76,18 @@ export default function BidTable({ notices, currentCategory }: BidTableProps) {
     )
     .sort((a, b) => sortData(a, b, sortConfig.field));
 
+  const filteredNotices = filterNotices(filteredAndSortedNotices, filter);
+
+  // 페이지네이션 로직
+  const totalPages = perPage === 0 ? 1 : Math.ceil(filteredNotices.length / perPage);
+  const paginatedNotices =
+    perPage === 0 ? filteredNotices : filteredNotices.slice((currentPage - 1) * perPage, currentPage * perPage);
+
+  // 페이지 변경 핸들러
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   // 정렬 토글
   const toggleSort = (field: SortField) => {
     setSortConfig({
@@ -82,11 +98,7 @@ export default function BidTable({ notices, currentCategory }: BidTableProps) {
 
   // 체크박스 토글
   const toggleCheckbox = (nid: number) => {
-    setSelectedNids(prev => 
-      prev.includes(nid) 
-        ? prev.filter(id => id !== nid)
-        : [...prev, nid]
-    );
+    setSelectedNids((prev) => (prev.includes(nid) ? prev.filter((id) => id !== nid) : [...prev, nid]));
   };
 
   // 즐겨찾기 추가
@@ -98,14 +110,34 @@ export default function BidTable({ notices, currentCategory }: BidTableProps) {
     alert(`선택된 공고 ID: ${selectedNids.join(', ')}`);
   };
 
+  // 행 클릭 핸들러
+  const handleRowClick = (notice: Notice, event: React.MouseEvent) => {
+    // 체크박스와 제목 링크를 클릭한 경우는 제외
+    const target = event.target as HTMLElement;
+    if (
+      target.tagName === 'INPUT' || // 체크박스
+      target.tagName === 'A' || // 링크
+      target.closest('button') || // 버튼
+      target.closest('a') // 링크의 자식 요소
+    ) {
+      return;
+    }
+    setSelectedNotice(notice);
+  };
+
+  if (filteredNotices.length === 0) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-gray-500">검색 결과가 없습니다.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 category-page">
       <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <Select
-            value={currentCategory}
-            onValueChange={handleCategoryChange}
-          >
+        <div className="flex items-center gap-4 flex-1">
+          <Select value={currentCategory} onValueChange={handleCategoryChange}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="카테고리 선택" />
             </SelectTrigger>
@@ -117,68 +149,53 @@ export default function BidTable({ notices, currentCategory }: BidTableProps) {
               ))}
             </SelectContent>
           </Select>
-          <div className="relative flex-1">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="입찰공고 검색..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-8"
-            />
+          <div className="relative flex-1 flex items-center gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 search-icon" />
+              <Input
+                placeholder="입찰공고 검색..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-8"
+              />
+            </div>
+            <AdvancedSearchModal />
           </div>
         </div>
-        <Button 
-          onClick={handleAddToFavorites}
-          variant="outline"
-          className="flex items-center gap-2"
-        >
-          <Star className="h-4 w-4" />
-          즐겨찾기에 추가
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button onClick={handleAddToFavorites} variant="outline" size="icon" title="즐겨찾기에 추가">
+            <Star className="h-4 w-4" />
+          </Button>
+          <SettingsModal />
+        </div>
       </div>
 
-      <div className="border rounded-md">
+      <div className="border rounded-md table-container">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="w-[50px] text-center">-</TableHead>
               <TableHead className="hidden">번호</TableHead>
               <TableHead>
-                <Button 
-                  variant="ghost" 
-                  onClick={() => toggleSort('title')} 
-                  className="hover:bg-transparent"
-                >
+                <Button variant="ghost" onClick={() => toggleSort('title')} className="hover:bg-transparent">
                   제목
                   <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
               </TableHead>
               <TableHead>
-                <Button 
-                  variant="ghost" 
-                  onClick={() => toggleSort('organization')} 
-                  className="hover:bg-transparent"
-                >
+                <Button variant="ghost" onClick={() => toggleSort('organization')} className="hover:bg-transparent">
                   기관명
                   <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
               </TableHead>
               <TableHead>
-                <Button 
-                  variant="ghost" 
-                  onClick={() => toggleSort('region')} 
-                  className="hover:bg-transparent"
-                >
+                <Button variant="ghost" onClick={() => toggleSort('region')} className="hover:bg-transparent">
                   지역
                   <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
               </TableHead>
               <TableHead>
-                <Button 
-                  variant="ghost" 
-                  onClick={() => toggleSort('registration')} 
-                  className="hover:bg-transparent"
-                >
+                <Button variant="ghost" onClick={() => toggleSort('registration')} className="hover:bg-transparent">
                   등록
                   <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
@@ -186,8 +203,8 @@ export default function BidTable({ notices, currentCategory }: BidTableProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredAndSortedNotices.map((notice, index) => (
-              <TableRow key={`${notice.organization}-${notice.createdAt}-${index}`}>
+            {paginatedNotices.map((notice) => (
+              <TableRow key={notice.nid} className="cursor-pointer" onClick={(e) => handleRowClick(notice, e)}>
                 <TableCell className="text-center">
                   <Checkbox
                     checked={selectedNids.includes(notice.nid)}
@@ -213,6 +230,30 @@ export default function BidTable({ notices, currentCategory }: BidTableProps) {
           </TableBody>
         </Table>
       </div>
+
+      {perPage > 0 && totalPages > 1 && (
+        <div className="flex justify-center gap-2 mt-4">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <Button
+              key={page}
+              variant={currentPage === page ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => handlePageChange(page)}
+            >
+              {page}
+            </Button>
+          ))}
+        </div>
+      )}
+
+      {/* 상세 정보 모달 */}
+      {selectedNotice && (
+        <NoticeDetailModal
+          notice={selectedNotice}
+          open={!!selectedNotice}
+          onOpenChange={(open) => !open && setSelectedNotice(null)}
+        />
+      )}
     </div>
   );
 }

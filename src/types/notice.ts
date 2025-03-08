@@ -1,12 +1,13 @@
 export interface Notice {
   nid: number;
-  제목: string;
-  기관명: string;
-  작성일: string;
-  상세페이지주소: string;
+  title: string;
+  organization: string;
+  createdAt: string;
+  detailUrl: string;
   category?: string;
-  지역?: string;
-  등록?: string;
+  region?: string;
+  registration?: string;
+  scrapDate?: string;
 }
 
 export interface RawNotice {

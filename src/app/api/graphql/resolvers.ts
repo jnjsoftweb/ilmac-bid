@@ -1,8 +1,11 @@
-import { fetchAllNotices, fetchNoticesByCategory, getCategoryKeywords } from '@/lib/api/notices';
+import { fetchAllNotices, getNoticesByCategory, getCategoryKeywords } from '@/lib/api/notices';
 
-interface NoticeArgs {
+interface CategoryArgs {
+  categoryType: string;
+}
+
+interface NoticesArgs {
   category: string;
-  startDate?: string;
 }
 
 interface AllNoticesArgs {
@@ -11,13 +14,13 @@ interface AllNoticesArgs {
 
 export const resolvers = {
   Query: {
-    notices: async (_, { category }) => {
-      return await fetchNoticesByCategory(category);
+    notices: async (_parent: unknown, { category }: NoticesArgs) => {
+      return await getNoticesByCategory(category);
     },
-    allNotices: async (_, { limit }) => {
+    allNotices: async (_parent: unknown, { limit }: AllNoticesArgs) => {
       return await fetchAllNotices(limit);
     },
-    categoryKeywords: async (_, { categoryType }) => {
+    categoryKeywords: async (_parent: unknown, { categoryType }: CategoryArgs) => {
       return await getCategoryKeywords(categoryType);
     },
   },

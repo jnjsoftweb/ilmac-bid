@@ -36,32 +36,11 @@ export default async function CategoryPage({ params }: PageProps) {
     const resolvedParams = await Promise.resolve(params);
     const categoryType = decodeURIComponent(resolvedParams.categoryType);
     const notices = await getNoticesByCategory(categoryType);
-    const categoryInfo = await getCategoryKeywords(categoryType);
 
     return (
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">{categoryType} 입찰공고</h1>
-        {/* {categoryInfo && (
-          <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-            <p className="text-sm text-gray-600">
-              <span className="font-semibold">검색어:</span> {categoryInfo.keywords.join(', ')}
-            </p>
-            <p className="text-sm text-gray-600">
-              <span className="font-semibold">제외어:</span> {categoryInfo.nots.join(', ')}
-            </p>
-            <p className="text-sm text-gray-600">
-              <span className="font-semibold">최소점수:</span> {categoryInfo.minPoint}
-            </p>
-            <p className="text-sm text-gray-600">
-              <span className="font-semibold">적용기관:</span> {categoryInfo.orgNames.join(', ')}
-            </p>
-          </div>
-        )} */}
         <Suspense fallback={<BidTableSkeleton />}>
-          <BidTable 
-            notices={notices} 
-            currentCategory={categoryType}
-          />
+          <BidTable notices={notices} currentCategory={categoryType} />
         </Suspense>
       </div>
     );
