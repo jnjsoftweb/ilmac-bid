@@ -1,0 +1,383 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 25% 95%;
+    --foreground: 220 10% 20%;
+    --card: 220 25% 95%;
+    --card-foreground: 220 10% 20%;
+    --popover: 220 25% 95%;
+    --popover-foreground: 220 10% 20%;
+    --primary: 220 70% 50%;
+    --primary-foreground: 220 10% 95%;
+    --secondary: 220 25% 90%;
+    --secondary-foreground: 220 10% 20%;
+    --muted: 220 25% 90%;
+    --muted-foreground: 220 10% 40%;
+    --accent: 220 25% 90%;
+    --accent-foreground: 220 10% 20%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 25% 85%;
+    --input: 220 25% 85%;
+    --ring: 220 70% 50%;
+    --radius: 1rem;
+
+    /* Neumorphism 변수 */
+    --neu-shadow-small: 0.3rem 0.3rem 0.6rem rgba(166, 175, 195, 0.3), 
+                       -0.2rem -0.2rem 0.5rem rgba(255, 255, 255, 0.8);
+    --neu-shadow: 0.5rem 0.5rem 1rem rgba(166, 175, 195, 0.3), 
+                 -0.3rem -0.3rem 0.8rem rgba(255, 255, 255, 0.8);
+    --neu-shadow-large: 0.8rem 0.8rem 1.4rem rgba(166, 175, 195, 0.2), 
+                       -0.4rem -0.4rem 1rem rgba(255, 255, 255, 0.8);
+    --neu-shadow-inset: inset 0.2rem 0.2rem 0.5rem rgba(166, 175, 195, 0.2), 
+                       inset -0.2rem -0.2rem 0.5rem rgba(255, 255, 255, 0.8);
+  }
+
+  [data-theme='dark'] {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: var(--primary-color, 0 72.2% 50.6%);
+    --primary-foreground: 0 85.7% 97.3%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: var(--primary-color, 0 72.2% 50.6%);
+  }
+
+  [data-primary-color='red'] {
+    --primary-color: 0 72.2% 50.6%;
+    --primary-dark: 0 72.2% 40.6%;
+    --primary-light: 0 72.2% 95%;
+  }
+
+  [data-primary-color='blue'] {
+    --primary-color: 221.2 83.2% 53.3%;
+    --primary-dark: 221.2 83.2% 43.3%;
+    --primary-light: 221.2 83.2% 95%;
+  }
+
+  [data-primary-color='green'] {
+    --primary-color: 142.1 76.2% 36.3%;
+    --primary-dark: 142.1 76.2% 26.3%;
+    --primary-light: 142.1 76.2% 95%;
+  }
+
+  [data-primary-color='orange'] {
+    --primary-color: 24.6 95% 53.1%;
+    --primary-dark: 24.6 95% 43.1%;
+    --primary-light: 24.6 95% 95%;
+  }
+
+  [data-primary-color='pink'] {
+    --primary-color: 346.8 77.2% 49.8%;
+    --primary-dark: 346.8 77.2% 39.8%;
+    --primary-light: 346.8 77.2% 95%;
+  }
+
+  [data-primary-color='purple'] {
+    --primary-color: 262.1 83.3% 57.8%;
+    --primary-dark: 262.1 83.3% 47.8%;
+    --primary-light: 262.1 83.3% 95%;
+  }
+
+  [data-primary-color='gray'] {
+    --primary-color: 220 8.9% 46.1%;
+    --primary-dark: 220 8.9% 36.1%;
+    --primary-light: 220 8.9% 96%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Neumorphism 기본 스타일 */
+.neumorphic {
+  background: hsl(var(--background));
+  box-shadow: var(--neu-shadow);
+  border-radius: var(--radius);
+}
+
+.neumorphic-inset {
+  background: hsl(var(--background));
+  box-shadow: var(--neu-shadow-inset);
+  border-radius: var(--radius);
+}
+
+/* 카테고리 페이지 스타일 */
+.category-page {
+  @apply p-8;
+}
+
+/* 테이블 스타일 */
+.category-page .table-container {
+  @apply neumorphic p-6;
+  background: hsl(var(--background));
+}
+
+.category-page thead tr {
+  background: transparent;
+  border-bottom: 2px solid hsl(var(--border));
+}
+
+.category-page thead th {
+  background: transparent !important;
+  @apply text-base font-semibold;
+  padding: 1px !important;
+}
+
+.category-page thead th button {
+  width: 100%;
+  height: calc(100% - 8px);
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 0;
+  gap: 0.5rem;
+}
+
+.category-page thead th button .lucide-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.category-page thead th:first-child button {
+  justify-content: center;
+}
+
+.category-page tbody tr {
+  border-bottom: 1px solid hsl(var(--border));
+  transition: all 0.3s ease;
+}
+
+.category-page tbody tr:hover {
+  background: transparent;
+  transform: translateY(-2px);
+}
+
+/* 버튼 스타일 */
+.category-page button {
+  @apply neumorphic;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.category-page button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--neu-shadow-large);
+}
+
+.category-page button:active {
+  @apply neumorphic-inset;
+  transform: translateY(0);
+}
+
+/* 입력 필드 스타일 */
+.category-page .input,
+.category-page .select-trigger {
+  @apply neumorphic-inset;
+  border: none;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.category-page .input:focus,
+.category-page .select-trigger:focus {
+  box-shadow: var(--neu-shadow-inset), 0 0 0 2px hsl(var(--ring) / 0.3);
+}
+
+/* 체크박스 스타일 */
+.category-page [type='checkbox'] {
+  @apply neumorphic;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.category-page [type='checkbox']:checked {
+  @apply neumorphic-inset;
+  background-color: hsl(var(--primary));
+}
+
+/* 모달 스타일 */
+.category-page .dialog-content {
+  @apply neumorphic;
+  border: none;
+}
+
+/* 카드 스타일 */
+.card {
+  @apply neumorphic;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--neu-shadow-large);
+}
+
+/* 페이지네이션 스타일 */
+.category-page .pagination button {
+  @apply neumorphic;
+  border: none;
+}
+
+.category-page .pagination button.active {
+  @apply neumorphic-inset;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+/* 검색 필드 스타일 */
+.category-page .search-container {
+  @apply neumorphic-inset;
+  padding: 0.5rem;
+}
+
+.category-page .search-icon {
+  color: hsl(var(--muted-foreground));
+}
+
+/* 아이콘 스타일 */
+.category-page .lucide-icon {
+  color: hsl(var(--foreground));
+  transition: all 0.3s ease;
+}
+
+/* 링크 스타일 */
+.category-page a {
+  color: hsl(var(--primary));
+  transition: all 0.3s ease;
+}
+
+.category-page a:hover {
+  color: hsl(var(--primary) / 0.8);
+  text-decoration: none;
+}
+
+/* 테이블 반응형 스타일 */
+@media (max-width: 768px) {
+  .category-page .table-container {
+    @apply p-2;
+  }
+  
+  .category-page thead th {
+    @apply text-sm;
+  }
+  
+  .category-page tbody td {
+    @apply text-sm;
+  }
+}
+
+.rdp {
+  --rdp-cell-size: 40px;
+  --rdp-accent-color: #0ea5e9;
+  --rdp-background-color: #e5e7eb;
+  --rdp-accent-color-dark: #0ea5e9;
+  --rdp-background-color-dark: #374151;
+  --rdp-outline: 2px solid var(--rdp-accent-color);
+  --rdp-outline-selected: 2px solid var(--rdp-accent-color);
+  margin: 0;
+}
+
+.rdp-day_selected,
+.rdp-day_selected:focus-visible,
+.rdp-day_selected:hover {
+  background-color: var(--rdp-accent-color);
+  color: white;
+}
+
+/* Table styles */
+.table-container th {
+  @apply hover:bg-transparent !important;
+}
+
+/* 헤더 스타일 */
+.header {
+  @apply neumorphic;
+  background: hsl(var(--background));
+  padding: 1rem 2rem;
+  margin-bottom: 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.header-content {
+  @apply container mx-auto flex items-center justify-between;
+}
+
+.header-logo {
+  @apply neumorphic p-2;
+  transition: all 0.3s ease;
+}
+
+.header-logo:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--neu-shadow-large);
+}
+
+.header-nav {
+  @apply flex items-center gap-4;
+}
+
+.header-nav-item {
+  @apply neumorphic px-4 py-2;
+  transition: all 0.3s ease;
+}
+
+.header-nav-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--neu-shadow-large);
+}
+
+.header-nav-item.active {
+  @apply neumorphic-inset;
+  background-color: hsl(var(--primary) / 0.1);
+}
+
+.header-actions {
+  @apply flex items-center gap-2;
+}
+
+.header-button {
+  @apply neumorphic p-2;
+  transition: all 0.3s ease;
+}
+
+.header-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--neu-shadow-large);
+}
+
+.header-button:active {
+  @apply neumorphic-inset;
+  transform: translateY(0);
+}
+
+/* 다크모드에서의 헤더 스타일 */
+[data-theme='dark'] .header {
+  background: hsl(var(--background));
+  box-shadow: var(--neu-shadow-dark);
+}
