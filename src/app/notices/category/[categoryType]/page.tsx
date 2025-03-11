@@ -5,10 +5,8 @@ import { Metadata } from 'next';
 import { getNoticesByCategory, getCategoryKeywords } from '@/lib/api/notices';
 
 interface PageProps {
-  params: {
-    categoryType: string;
-  };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ categoryType: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

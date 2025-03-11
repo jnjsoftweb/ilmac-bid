@@ -5,12 +5,10 @@ import BidTable from '@/components/notices/BidTable';
 import BidTableSkeleton from '@/components/notices/BidTableSkeleton';
 import { Metadata } from 'next';
 
-interface PageProps {
-  params: Promise<{
-    limit: string;
-  }>;
-  searchParams: { [key: string]: string | string[] | undefined };
-}
+type PageProps = {
+  params: Promise<{ limit: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
 
 const GET_ALL_NOTICES = gql`
   query GetAllNotices($limit: Int!) {

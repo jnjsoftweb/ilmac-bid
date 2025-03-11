@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { type SettingsList } from '@/lib/api/settings';
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from '@/components/ui/textarea';
 
 interface SettingsEditModalProps {
   setting: SettingsList | null;
@@ -16,12 +16,7 @@ interface SettingsEditModalProps {
   onSave: (setting: SettingsList) => void;
 }
 
-export default function SettingsEditModal({ 
-  setting, 
-  isOpen, 
-  onClose, 
-  onSave 
-}: SettingsEditModalProps) {
+export default function SettingsEditModal({ setting, isOpen, onClose, onSave }: SettingsEditModalProps) {
   const [editedSetting, setEditedSetting] = useState<SettingsList | null>(setting);
 
   useEffect(() => {
@@ -31,9 +26,9 @@ export default function SettingsEditModal({
   if (!editedSetting) return null;
 
   const handleChange = (field: keyof SettingsList, value: any) => {
-    setEditedSetting(prev => ({
+    setEditedSetting((prev) => ({
       ...prev!,
-      [field]: field === 'use' ? (value ? 1 : 0) : value
+      [field]: field === 'use' ? (value ? 1 : 0) : value,
     }));
   };
 
@@ -72,11 +67,7 @@ export default function SettingsEditModal({
             {/* URL 및 iframe 설정 */}
             <div className="space-y-2">
               <Label htmlFor="url">URL</Label>
-              <Input
-                id="url"
-                value={editedSetting.url || ''}
-                onChange={(e) => handleChange('url', e.target.value)}
-              />
+              <Input id="url" value={editedSetting.url || ''} onChange={(e) => handleChange('url', e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="iframe">iframe</Label>
@@ -194,7 +185,7 @@ export default function SettingsEditModal({
             <div className="flex items-center space-x-2 pt-8">
               <Checkbox
                 id="use"
-                checked={editedSetting.use === 1}
+                checked={editedSetting.use === 1 ? true : false}
                 onCheckedChange={(checked) => handleChange('use', checked)}
               />
               <Label htmlFor="use">사용</Label>
@@ -211,4 +202,4 @@ export default function SettingsEditModal({
       </DialogContent>
     </Dialog>
   );
-} 
+}

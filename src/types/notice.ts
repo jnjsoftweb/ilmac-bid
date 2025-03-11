@@ -8,6 +8,7 @@ export interface Notice {
   region?: string;
   registration?: string;
   scrapDate?: string;
+  description?: string;
 }
 
 export interface RawNotice {

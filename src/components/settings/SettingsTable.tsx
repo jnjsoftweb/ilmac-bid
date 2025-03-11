@@ -31,16 +31,7 @@ export default function SettingsTable({ settings, onUpdate }: SettingsTableProps
   const sortData = (a: SettingsList, b: SettingsList, field: SortField) => {
     const aValue = String(a[field] || '');
     const bValue = String(b[field] || '');
-
-    if (field === 'createdAt' || field === 'updatedAt') {
-      return sortConfig.order === 'asc'
-        ? new Date(aValue).getTime() - new Date(bValue).getTime()
-        : new Date(bValue).getTime() - new Date(aValue).getTime();
-    }
-
-    return sortConfig.order === 'asc'
-      ? aValue.localeCompare(bValue)
-      : bValue.localeCompare(aValue);
+    return sortConfig.order === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
   };
 
   // 검색 및 정렬된 데이터
@@ -48,8 +39,8 @@ export default function SettingsTable({ settings, onUpdate }: SettingsTableProps
     .filter(
       (setting) =>
         setting.기관명.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        setting.지역.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        setting.등록.toLowerCase().includes(searchTerm.toLowerCase())
+        (setting.지역?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+        String(setting.등록 || '').includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => sortData(a, b, sortConfig.field));
 
@@ -71,11 +62,7 @@ export default function SettingsTable({ settings, onUpdate }: SettingsTableProps
   };
 
   const toggleCheckbox = (기관명: string) => {
-    setSelectedSettings(prev => 
-      prev.includes(기관명)
-        ? prev.filter(name => name !== 기관명)
-        : [...prev, 기관명]
-    );
+    setSelectedSettings((prev) => (prev.includes(기관명) ? prev.filter((name) => name !== 기관명) : [...prev, 기관명]));
   };
 
   return (
@@ -91,9 +78,7 @@ export default function SettingsTable({ settings, onUpdate }: SettingsTableProps
           />
         </div>
         <div>
-          <span className="text-sm text-gray-500">
-            선택된 기관: {selectedSettings.length}
-          </span>
+          <span className="text-sm text-gray-500">선택된 기관: {selectedSettings.length}</span>
         </div>
       </div>
 
@@ -106,7 +91,7 @@ export default function SettingsTable({ settings, onUpdate }: SettingsTableProps
                   checked={selectedSettings.length === settings.length}
                   onCheckedChange={(checked) => {
                     if (checked) {
-                      setSelectedSettings(settings.map(s => s.기관명));
+                      setSelectedSettings(settings.map((s) => s.기관명));
                     } else {
                       setSelectedSettings([]);
                     }
@@ -114,22 +99,14 @@ export default function SettingsTable({ settings, onUpdate }: SettingsTableProps
                 />
               </TableHead>
               <TableHead>
-                <Button 
-                  variant="ghost" 
-                  onClick={() => toggleSort('기관명')} 
-                  className="hover:bg-transparent"
-                >
+                <Button variant="ghost" onClick={() => toggleSort('기관명')} className="hover:bg-transparent">
                   기관명
                   <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
               </TableHead>
               <TableHead>URL</TableHead>
               <TableHead>
-                <Button 
-                  variant="ghost" 
-                  onClick={() => toggleSort('지역')} 
-                  className="hover:bg-transparent"
-                >
+                <Button variant="ghost" onClick={() => toggleSort('지역')} className="hover:bg-transparent">
                   지역
                   <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
@@ -138,12 +115,9 @@ export default function SettingsTable({ settings, onUpdate }: SettingsTableProps
           </TableHeader>
           <TableBody>
             {filteredAndSortedSettings.map((setting) => (
-              <TableRow 
+              <TableRow
                 key={setting.기관명}
-                className={cn(
-                  "cursor-pointer hover:bg-gray-50",
-                  setting.use === 0 && "text-gray-400"
-                )}
+                className={cn('cursor-pointer hover:bg-gray-50', setting.use === 0 && 'text-gray-400')}
                 onClick={() => handleRowClick(setting)}
               >
                 <TableCell onClick={(e) => e.stopPropagation()}>
@@ -169,4 +143,4 @@ export default function SettingsTable({ settings, onUpdate }: SettingsTableProps
       />
     </div>
   );
-} 
+}
