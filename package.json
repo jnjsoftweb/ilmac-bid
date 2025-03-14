@@ -2,10 +2,12 @@
   "name": "ts-nextjs-shadcn",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev -p ${PORT:-3011}",
     "start": "next start -p ${PORT:-3011}",
-    "build": "next build"
+    "build": "next build",
+    "scrape:test": "tsx src/lib/scraper/test/gangnam.ts"
   },
   "dependencies": {
     "@apollo/client": "^3.13.2",
@@ -21,9 +23,15 @@
     "@radix-ui/react-popover": "^1.1.6",
     "@radix-ui/react-select": "^2.1.6",
     "@radix-ui/react-slot": "^1.1.2",
+    "@types/cheerio": "^0.22.35",
+    "@types/selenium-webdriver": "^4.1.22",
+    "axios": "^1.6.7",
+    "cheerio": "^1.0.0-rc.12",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "critters": "^0.0.25",
     "date-fns": "^3.6.0",
+    "dayjs": "^1.11.10",
     "graphql": "^16.10.0",
     "lucide-react": "^0.477.0",
     "mysql2": "^3.13.0",
@@ -32,6 +40,7 @@
     "react-day-picker": "^8.10.1",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.54.2",
+    "selenium-webdriver": "^4.18.1",
     "serverless-mysql": "^2.1.0",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
@@ -40,14 +49,17 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@types/node": "22.13.10",
+    "@types/node": "^20.11.30",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "autoprefixer": "^10.4.16",
+    "cross-env": "^7.0.3",
     "eslint": "^9",
     "eslint-config-next": "15.2.1",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.5",
+    "ts-loader": "^9.5.2",
+    "tsx": "^4.7.1",
     "typescript": "5.8.2"
   }
 }

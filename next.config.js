@@ -17,6 +17,18 @@ const nextConfig = {
   experimental: {
     optimizeCss: true,
   },
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.module.rules.push({
+        test: /\.ts$/,
+        loader: 'ts-loader',
+        options: {
+          transpileOnly: true,
+        },
+      });
+    }
+    return config;
+  },
 };
 
-module.exports = nextConfig;
+export default nextConfig;

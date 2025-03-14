@@ -4,5 +4,5 @@ npm install --legacy-peer-deps
 ```
 
 
-
+sudo docker exec -it wpcli /bin/bash
 
